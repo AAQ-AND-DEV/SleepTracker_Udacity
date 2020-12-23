@@ -89,11 +89,11 @@ class SleepDatabaseTest {
         runBlocking {
             sleepDao.insert(night)
         }
-        val tonight: SleepNight
+        val tonight: SleepNight?
         runBlocking{
             tonight = sleepDao.getTonight()
         }
-        assertEquals(tonight.sleepQuality, -1)
+        assertEquals(tonight?.sleepQuality, -1)
     }
 
     @Test
@@ -115,20 +115,24 @@ class SleepDatabaseTest {
         runBlocking {
             sleepDao.insert(night)
         }
-        val retrievedNight: SleepNight
+        val retrievedNight: SleepNight?
         runBlocking {
             retrievedNight = sleepDao.getTonight()
         }
-        retrievedNight.sleepQuality = 5
+
+        assertEquals(retrievedNight?.sleepQuality, -1)
+        retrievedNight?.sleepQuality = 5
         runBlocking {
-            sleepDao.update(retrievedNight)
+            if (retrievedNight != null) {
+                sleepDao.update(retrievedNight)
+            }
         }
-        val updatedNight : SleepNight
+        val updatedNight : SleepNight?
         runBlocking {
             updatedNight = sleepDao.getTonight()
         }
 
-        assertEquals(updatedNight.sleepQuality, 5)
+        assertEquals(updatedNight?.sleepQuality, 5)
     }
 
     @Test
@@ -136,12 +140,12 @@ class SleepDatabaseTest {
     fun getNight(){
         populateDb()
 
-        val retrievedNight: SleepNight
+        val retrievedNight: SleepNight?
         runBlocking {
             retrievedNight = sleepDao.get(2)
         }
 
-        assertEquals(retrievedNight.nightId, 2)
+        assertEquals(retrievedNight?.nightId, 2)
     }
 
     @Test
