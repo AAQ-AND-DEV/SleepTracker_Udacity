@@ -56,8 +56,19 @@ class SleepTrackerFragment : Fragment() {
         // Get a reference to the binding object and inflate the fragment views.
         val binding: FragmentSleepTrackerBinding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_sleep_tracker, container, false)
+
+        val adapter = SleepNightAdapter()
+        binding.sleepList.adapter = adapter
+
+        viewModel.nights.observe(viewLifecycleOwner){
+            it?.let{
+                adapter.data = it
+            }
+        }
+
         binding.lifecycleOwner = this
         binding.sleepTrackerViewModel = viewModel
+
         viewModel.navigationToSleepQuality.observe(viewLifecycleOwner){
             night ->
             night?.let {
